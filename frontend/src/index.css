@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --accent-gold: #c5a880; /* Elegant Construction Gold */
+    --accent-gold-hover: #b3956d;
+    --border-color: #e5e7eb;
+  }
+
+  :root.dark {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #121212;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --accent-gold: #d4af37; /* Lighter Metallic Gold for Dark Mode */
+    --accent-gold-hover: #c5a880;
+    --border-color: #262626;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+  }
+
+  p {
+    text-align: justify;
+  }
+}
+
+.img-credit img {
+    border-radius: 8px;
+}
+.img-wrapper img, .img-wrapper video {
+    height: 100%;
+    left: 0;
+    -o-object-fit: cover;
+    object-fit: cover;
+    -o-object-position: 50% 0;
+    object-position: 50% 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.img-wrapper {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    font-size: 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+@media (min-width: 1025px) {
+    .anim-block .anim-elem.anim-visible, .anim-block .anim-elem.done {
+        opacity: 1;
+        visibility: visible;
+    }
+    .anim-block .anim-elem {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+::-webkit-scrollbar {
+    background-color: #106dc3;
+    width: 13px;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(13deg, #ff4026, #ff4026 0);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #ff4026;
+    border-radius: 5px;
+    -webkit-box-shadow: inset -30px 10px 12px #dcdcdc;
+    box-shadow: inset -30px 10px 12px #dcdcdc;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.moving-gradient-bg {
+  background: linear-gradient(135deg, #020617 0%, #0f172a 30%, #1e1b4b 60%, #2e1065 100%);
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s ease infinite;
+}
+
+/* Cinematic 3D Website Experience Styling */
+:root {
+  --perspective: 1200px;
+  --mouse-x: 0.5;
+  --mouse-y: 0.5;
+  --cursor-x: 0px;
+  --cursor-y: 0px;
+}
+
+/* Custom modern scroll progress bar */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1d4ed8, #ef4444, #d4af37);
+  z-index: 9999;
+  width: 0%;
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 12px rgba(29, 78, 216, 0.8), 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Ambient 3D Cyber Grid Background Overlay */
+.cinematic-bg-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  perspective: var(--perspective);
+  transform-style: preserve-3d;
+}
+
+.cyber-grid {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image: 
+    linear-gradient(rgba(29, 78, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 78, 216, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: rotateX(60deg) translateZ(-100px) translateY(calc(var(--scroll-y, 0) * -0.05px));
+  opacity: 0.4;
+  transform-origin: center center;
+  transition: transform 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* Ambient cursor glow */
+.cursor-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(29, 78, 216, 0.08) 0%, rgba(212, 175, 55, 0.02) 50%, transparent 70%);
+  transform: translate(-50%, -50%);
+  left: var(--cursor-x);
+  top: var(--cursor-y);
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: screen;
+  will-change: left, top;
+}
+
+/* Modern custom magnetic cursor */
+.custom-cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-gold, #d4af37);
+  border-radius: 50%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10000;
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  box-shadow: 0 0 10px var(--accent-gold);
+}
+
+.custom-cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(29, 78, 216, 0.4);
+  border-radius: 50%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s;
+  will-change: left, top, transform;
+}
+
+/* Hover effects for custom cursor */
+body.cursor-hovering .custom-cursor-dot {
+  width: 4px;
+  height: 4px;
+  background-color: #ef4444;
+}
+
+body.cursor-hovering .custom-cursor-ring {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(239, 68, 68, 0.8);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Cinematic 3D scroll section reveal */
+.cinematic-3d-reveal {
+  opacity: 0;
+  transform: perspective(var(--perspective)) rotateX(15deg) translateZ(-120px) translateY(50px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.cinematic-3d-reveal.reveal-active {
+  opacity: 1;
+  transform: perspective(var(--perspective)) rotateX(0deg) translateZ(0px) translateY(0px);
+}
+
+/* Dynamic Interactive Hover 3D Tilt Elements */
+.interactive-3d-tilt {
+  transform: perspective(1000px) rotateX(calc(var(--rx, 0) * 1deg)) rotateY(calc(var(--ry, 0) * 1deg)) translateZ(calc(var(--tz, 0) * 1px));
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.25s;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.interactive-3d-tilt:hover {
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* 3D Depth Card Inner Elements */
+.interactive-3d-tilt * {
+  transform-style: preserve-3d;
+}
+
+.tilt-depth-high {
+  transform: translateZ(40px);
+}
+
+.tilt-depth-med {
+  transform: translateZ(20px);
+}
+
+/* Mobile responsive styles for 3D effects and animations */
+@media (max-width: 1024px) {
+  .cyber-grid {
+    background-size: 30px 30px;
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide custom cursor and pointer elements to prevent interaction blocking */
+  .custom-cursor-dot,
+  .custom-cursor-ring,
+  .cursor-glow {
+    display: none !important;
+  }
+  
+  /* Disable hardware-heavy hover-based 3D tilt effects on touchscreens */
+  .interactive-3d-tilt {
+    transform: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Adjust cinematic 3D reveal for mobile to avoid Z-index clipping and performance lag */
+  .cinematic-3d-reveal {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  
+  .cinematic-3d-reveal.reveal-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+
