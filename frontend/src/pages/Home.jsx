@@ -12,9 +12,9 @@ export default function Home({ setPage }) {
     title: "About Anu Building Constructions",
     subtitle: "Meet Our Founder & Managing Director",
     content: "Anu Building Constructions, established in 2004, has grown to become Coimbatore's and South India's trusted premier builder of dream homes, luxury villas, apartment complexes, and high-quality commercial structures. Under the dynamic leadership of our founder, we have successfully handed over more than 2,500 projects. Our commitment to excellence, transparent pricing, premium certified materials, and on-time delivery form the foundation of our long-term client relationships. We continue to innovate with sustainable building designs and advanced prefabricated office systems.",
-    founderName: "Mr. P. Anbarasan",
+    founderName: "Rajini",
     founderRole: "Founder & Managing Director",
-    imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1560250"
   });
 
   useEffect(() => {
@@ -363,7 +363,7 @@ export default function Home({ setPage }) {
               <div style={{ position: "absolute", inset: "-15px", border: "2px solid #1D4ED8", borderRadius: 24, transform: "rotate(-2deg)", zIndex: 1, pointerEvents: "none" }} />
               <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.12)", zIndex: 2 }}>
                 <img
-                  src={aboutFounder.imageUrl || "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80"}
+                  src={aboutFounder.imageUrl || "https://images.unsplash.com"}
                   alt={aboutFounder.founderName}
                   style={{ width: "100%", height: 500, objectFit: "cover", display: "block" }}
                 />

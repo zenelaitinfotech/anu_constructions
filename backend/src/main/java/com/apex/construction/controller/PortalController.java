@@ -318,9 +318,9 @@ public class PortalController {
                 "About Anu Building Constructions",
                 "Meet Our Founder & Managing Director",
                 "Anu Building Constructions, established in 2004, has grown to become Coimbatore's and South India's trusted premier builder of dream homes, luxury villas, apartment complexes, and high-quality commercial structures. Under the dynamic leadership of our founder, we have successfully handed over more than 2,500 projects. Our commitment to excellence, transparent pricing, premium certified materials, and on-time delivery form the foundation of our long-term client relationships. We continue to innovate with sustainable building designs and advanced prefabricated office systems.",
-                "Mr. P. Anbarasan",
+                "Rajini",
                 "Founder & Managing Director",
-                "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80"
+                "https://images.unsplash.com/photo-1560250097-0b93"
             ));
         }
     }
