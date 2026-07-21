@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
-    @Value("${spring.datasource.url:jdbc:h2:mem:apexdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}")
+    @Value("${spring.datasource.url:${DATABASE_URL:jdbc:h2:mem:apexdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}}")
     private String rawUrl;
 
     @Value("${spring.datasource.username:sa}")
@@ -24,9 +24,8 @@ public class DataSourceConfig {
     @Primary
     public DataSource dataSource() {
         String dbUrl = rawUrl;
-        
-        // Handle Render's default DATABASE_URL or environment variable missing 'jdbc:' prefix
-        if (dbUrl != null) {
+
+        if (dbUrl != null && !dbUrl.isEmpty()) {
             dbUrl = dbUrl.trim();
             if (dbUrl.startsWith("postgresql://")) {
                 dbUrl = "jdbc:" + dbUrl;
@@ -35,15 +34,18 @@ public class DataSourceConfig {
             }
         }
 
-        DataSourceBuilder<?> builder = DataSourceBuilder.create()
-                .url(dbUrl)
-                .username(username)
-                .password(password);
+        DataSourceBuilder<?> builder = DataSourceBuilder.create();
 
         if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
             builder.driverClassName("org.postgresql.Driver");
+            builder.url(dbUrl);
+            builder.username(username);
+            builder.password(password);
         } else {
             builder.driverClassName("org.h2.Driver");
+            builder.url(dbUrl != null && !dbUrl.isEmpty() ? dbUrl : "jdbc:h2:mem:apexdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL");
+            builder.username(username);
+            builder.password(password);
         }
 
         return builder.build();
