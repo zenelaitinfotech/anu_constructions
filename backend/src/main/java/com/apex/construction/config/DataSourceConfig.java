@@ -38,6 +38,13 @@ public class DataSourceConfig {
 
         if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
             builder.driverClassName("org.postgresql.Driver");
+            if (dbUrl.contains(".render.com") && !dbUrl.contains("sslfactory")) {
+                if (!dbUrl.contains("?")) {
+                    dbUrl += "?sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory";
+                } else if (!dbUrl.contains("sslfactory")) {
+                    dbUrl += "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
+                }
+            }
             builder.url(dbUrl);
             builder.username(username);
             builder.password(password);
