@@ -23,37 +23,39 @@ public class DataSourceConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        String dbUrl = rawUrl;
+        String dbUrl = rawUrl != null ? rawUrl.trim() : "";
 
-        if (dbUrl != null && !dbUrl.isEmpty()) {
-            dbUrl = dbUrl.trim();
+        // Detect PostgreSQL connection
+        boolean isPostgres = dbUrl.contains("postgres") || dbUrl.contains("render.com") || dbUrl.contains("5432") || dbUrl.contains("anu_constructions");
+
+        if (isPostgres) {
             if (dbUrl.startsWith("postgresql://")) {
                 dbUrl = "jdbc:" + dbUrl;
             } else if (dbUrl.startsWith("postgres://")) {
                 dbUrl = "jdbc:postgresql://" + dbUrl.substring("postgres://".length());
+            } else if (!dbUrl.startsWith("jdbc:postgresql://")) {
+                dbUrl = "jdbc:postgresql://" + dbUrl;
             }
-        }
 
-        DataSourceBuilder<?> builder = DataSourceBuilder.create();
-
-        if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
-            builder.driverClassName("org.postgresql.Driver");
-
-            // Ensure Render PostgreSQL has sslmode=require as required by Render
+            // Ensure sslmode=require for Render external connection
             if (dbUrl.contains(".render.com") && !dbUrl.contains("sslmode=")) {
                 dbUrl += dbUrl.contains("?") ? "&sslmode=require" : "?sslmode=require";
             }
 
-            builder.url(dbUrl);
-            builder.username(username);
-            builder.password(password);
+            return DataSourceBuilder.create()
+                    .driverClassName("org.postgresql.Driver")
+                    .url(dbUrl)
+                    .username(username)
+                    .password(password)
+                    .build();
         } else {
-            builder.driverClassName("org.h2.Driver");
-            builder.url(dbUrl != null && !dbUrl.isEmpty() ? dbUrl : "jdbc:h2:mem:apexdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL");
-            builder.username(username);
-            builder.password(password);
+            // Local H2 fallback
+            return DataSourceBuilder.create()
+                    .driverClassName("org.h2.Driver")
+                    .url(dbUrl.isEmpty() ? "jdbc:h2:mem:apexdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL" : dbUrl)
+                    .username(username)
+                    .password(password)
+                    .build();
         }
-
-        return builder.build();
     }
 }
