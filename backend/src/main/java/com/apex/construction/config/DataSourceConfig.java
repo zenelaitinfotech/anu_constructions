@@ -37,9 +37,14 @@ public class DataSourceConfig {
                 dbUrl = "jdbc:postgresql://" + dbUrl;
             }
 
-            // Ensure sslmode=require for Render external connection
-            if (dbUrl.contains(".render.com") && !dbUrl.contains("sslmode=")) {
-                dbUrl += dbUrl.contains("?") ? "&sslmode=require" : "?sslmode=require";
+            // Ensure ssl=true and sslmode=require for Render external connection to provide SNI hostname
+            if (dbUrl.contains(".render.com")) {
+                if (!dbUrl.contains("ssl=")) {
+                    dbUrl += dbUrl.contains("?") ? "&ssl=true" : "?ssl=true";
+                }
+                if (!dbUrl.contains("sslmode=")) {
+                    dbUrl += "&sslmode=require";
+                }
             }
 
             return DataSourceBuilder.create()
