@@ -38,13 +38,15 @@ public class DataSourceConfig {
 
         if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
             builder.driverClassName("org.postgresql.Driver");
-            if (dbUrl.contains(".render.com") && !dbUrl.contains("sslfactory")) {
-                if (!dbUrl.contains("?")) {
-                    dbUrl += "?sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory";
-                } else if (!dbUrl.contains("sslfactory")) {
-                    dbUrl += "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
-                }
+
+            // Clean up SSL parameters that cause EOFException on Render PostgreSQL
+            if (dbUrl.contains("sslmode=require")) {
+                dbUrl = dbUrl.replace("sslmode=require", "sslmode=disable");
             }
+            if (dbUrl.contains("sslfactory=")) {
+                dbUrl = dbUrl.replaceAll("&?sslfactory=[^&]*", "");
+            }
+
             builder.url(dbUrl);
             builder.username(username);
             builder.password(password);
