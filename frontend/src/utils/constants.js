@@ -1,4 +1,5 @@
 export const NAV_ITEMS = [
+  { label: "Home", page: "home" },
   {
     label: "Our Company",
     page: "our-company"

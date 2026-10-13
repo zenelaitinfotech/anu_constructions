@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NAV_ITEMS } from "../../utils/constants";
 
 const LINK_MAP = {
+  "Home": "home",
   "Our Company": "our-company",
   "Our Services": "services",
   "Our Projects": "projects",
@@ -45,7 +46,7 @@ const LINK_MAP = {
   "Virtual Design & Construction": "services",
 };
 
-export default function Navbar({ setPage }) {
+export default function Navbar({ setPage, currentPage = "home" }) {
   const [openMenu, setOpenMenu] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -81,33 +82,39 @@ export default function Navbar({ setPage }) {
         </button>
 
         {/* Desktop nav */}
-        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, justifyContent: "center", flexWrap: "nowrap", minWidth: 0 }}>
-          {NAV_ITEMS.map(item => (
-            <div key={item.label} style={{ position: "relative", flexShrink: 0 }}
-              onMouseEnter={() => item.sections && handleMouseEnter(item.label)}
-              onMouseLeave={handleMouseLeave}
-            >
-              <button
-                onClick={() => { if (item.page) { setPage(item.page); setOpenMenu(null); } }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: "20px 13px",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: openMenu === item.label ? "#fff" : "#D1D5DB",
-                  transition: "color 0.2s",
-                  position: "relative",
-                  whiteSpace: "nowrap",
-                  letterSpacing: "-0.1px"
-                }}
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center", flexWrap: "nowrap", minWidth: 0 }}>
+          {NAV_ITEMS.map(item => {
+            const isCurrent = currentPage === item.page || (item.page === "home" && (!currentPage || currentPage === "home"));
+            const isHighlighted = isCurrent || openMenu === item.label;
+            return (
+              <div key={item.label} style={{ position: "relative", flexShrink: 0 }}
+                onMouseEnter={() => item.sections && handleMouseEnter(item.label)}
+                onMouseLeave={handleMouseLeave}
               >
-                {item.label}
-                {openMenu === item.label && <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: "#EF4444" }} />}
-              </button>
-            </div>
-          ))}
+                <button
+                  onClick={() => { if (item.page) { setPage(item.page); setOpenMenu(null); } }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "20px 11px",
+                    fontSize: 14,
+                    fontWeight: isHighlighted ? 600 : 500,
+                    color: isHighlighted ? "#fff" : "#D1D5DB",
+                    transition: "color 0.2s",
+                    position: "relative",
+                    whiteSpace: "nowrap",
+                    letterSpacing: "-0.1px"
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = "#fff"}
+                  onMouseLeave={e => { if (!isHighlighted) e.currentTarget.style.color = "#D1D5DB"; }}
+                >
+                  {item.label}
+                  {isHighlighted && <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: "#EF4444" }} />}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {/* Right CTAs */}

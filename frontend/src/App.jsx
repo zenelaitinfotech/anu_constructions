@@ -424,7 +424,7 @@ export default function App() {
           }
         }
       `}</style>
-      <Navbar setPage={setPageAndScroll} />
+      <Navbar setPage={setPageAndScroll} currentPage={page} />
       <main style={{ 
         paddingTop: page === "home" ? 0 : 68,
         opacity: isTransitioning ? 0 : 1,
