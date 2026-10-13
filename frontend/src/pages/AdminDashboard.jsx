@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import API_BASE_URL from "../config/api";
+import API_BASE_URL, { getImageUrl } from "../config/api";
+import ImageField from "../components/Common/ImageField";
 
 const API_BASE = `${API_BASE_URL}/api`;
 
@@ -125,14 +126,16 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        onUploadSuccess(data.url);
+        if (onUploadSuccess) onUploadSuccess(data.url);
         fetchAssets();
+        return data.url;
       } else {
         alert("Image upload failed.");
       }
     } catch (err) {
       console.error(err);
-      alert("Error uploading image.");
+      alert("Error uploading image: " + (err.message || "Unknown error"));
+      throw err;
     }
   };
 
@@ -428,13 +431,14 @@ export default function AdminDashboard() {
               <div style={{ display: "grid", gap: 12 }}>
                 <input type="text" placeholder="Service Title" value={serviceForm.title} onChange={e => setServiceForm({ ...serviceForm, title: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB" }} />
                 <textarea placeholder="Description" value={serviceForm.descText} onChange={e => setServiceForm({ ...serviceForm, descText: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB", height: 80 }} />
-                <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                  <input type="text" placeholder="Image URL" value={serviceForm.img} onChange={e => setServiceForm({ ...serviceForm, img: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 12, color: "#6B7280" }}>Or upload:</span>
-                    <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setServiceForm({ ...serviceForm, img: url })); }} style={{ fontSize: 12 }} />
-                  </div>
-                </div>
+                <ImageField
+                  label="Service Image"
+                  value={serviceForm.img}
+                  onChange={url => setServiceForm({ ...serviceForm, img: url })}
+                  onUpload={handleImageUpload}
+                  uploadedAssets={uploadedAssets}
+                  placeholder="https://images.unsplash.com/... or browse file"
+                />
                 <div style={{ display: "flex", gap: 10 }}>
                   <button type="submit" style={{ flex: 1, padding: 10, background: "#1D4ED8", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Save</button>
                   {serviceForm.id && <button type="button" onClick={() => setServiceForm({ id: null, title: "", descText: "", img: "" })} style={{ padding: 10, background: "#6B7280", color: "white", border: "none", cursor: "pointer" }}>Cancel</button>}
@@ -445,7 +449,16 @@ export default function AdminDashboard() {
             <div style={{ display: "grid", gap: 12 }}>
               {services.map(serv => (
                 <div key={serv.id} style={{ display: "flex", gap: 14, padding: 14, border: "1px solid #E5E7EB", borderRadius: 6 }}>
-                  <img src={serv.img} alt="" style={{ width: 80, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                  <img
+                    src={getImageUrl(serv.img)}
+                    alt=""
+                    style={{ width: 80, height: 60, objectFit: "cover", borderRadius: 4, background: "#F3F4F6" }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      if (serv.img && serv.img.startsWith("/uploads/")) e.target.src = serv.img;
+                      else e.target.src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=500&q=80";
+                    }}
+                  />
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                       <strong style={{ fontSize: 15 }}>{serv.title}</strong>
@@ -470,13 +483,14 @@ export default function AdminDashboard() {
               <div style={{ display: "grid", gap: 12 }}>
                 <input type="text" placeholder="Expertise Name" value={expertiseForm.name} onChange={e => setExpertiseForm({ ...expertiseForm, name: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB" }} />
                 <textarea placeholder="Description" value={expertiseForm.description || ""} onChange={e => setExpertiseForm({ ...expertiseForm, description: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB", height: 80 }} />
-                <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                  <input type="text" placeholder="Image URL" value={expertiseForm.imageUrl || ""} onChange={e => setExpertiseForm({ ...expertiseForm, imageUrl: e.target.value })} required style={{ padding: 10, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 12, color: "#6B7280" }}>Or upload:</span>
-                    <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setExpertiseForm({ ...expertiseForm, imageUrl: url })); }} style={{ fontSize: 12 }} />
-                  </div>
-                </div>
+                <ImageField
+                  label="Expertise Area Image"
+                  value={expertiseForm.imageUrl}
+                  onChange={url => setExpertiseForm({ ...expertiseForm, imageUrl: url })}
+                  onUpload={handleImageUpload}
+                  uploadedAssets={uploadedAssets}
+                  placeholder="https://images.unsplash.com/... or browse file"
+                />
                 <div style={{ display: "flex", gap: 10 }}>
                   <button type="submit" style={{ flex: 1, padding: 10, background: "#1D4ED8", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Save</button>
                   {expertiseForm.id && <button type="button" onClick={() => setExpertiseForm({ id: null, name: "", description: "", imageUrl: "" })} style={{ padding: 10, background: "#6B7280", color: "white", border: "none", cursor: "pointer" }}>Cancel</button>}
@@ -487,7 +501,18 @@ export default function AdminDashboard() {
             <div style={{ display: "grid", gap: 12 }}>
               {expertise.map(exp => (
                 <div key={exp.id} style={{ display: "flex", gap: 14, padding: 14, border: "1px solid #E5E7EB", borderRadius: 6, background: "white" }}>
-                  {exp.imageUrl && <img src={exp.imageUrl} alt="" style={{ width: 80, height: 60, objectFit: "cover", borderRadius: 4 }} />}
+                  {exp.imageUrl && (
+                    <img
+                      src={getImageUrl(exp.imageUrl)}
+                      alt=""
+                      style={{ width: 80, height: 60, objectFit: "cover", borderRadius: 4, background: "#F3F4F6" }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        if (exp.imageUrl && exp.imageUrl.startsWith("/uploads/")) e.target.src = exp.imageUrl;
+                        else e.target.src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=500&q=80";
+                      }}
+                    />
+                  )}
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                       <strong style={{ fontSize: 15 }}>{exp.name}</strong>
@@ -516,13 +541,14 @@ export default function AdminDashboard() {
               <input type="text" placeholder="Project Title" value={projectForm.title} onChange={e => setProjectForm({ ...projectForm, title: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
               <input type="text" placeholder="Category (e.g. Commercial, Sports)" value={projectForm.category} onChange={e => setProjectForm({ ...projectForm, category: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
               <input type="text" placeholder="Location" value={projectForm.location} onChange={e => setProjectForm({ ...projectForm, location: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-              <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                <input type="text" placeholder="Image URL" value={projectForm.image} onChange={e => setProjectForm({ ...projectForm, image: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", width: "100%" }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 12, color: "#6B7280" }}>Or upload:</span>
-                  <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setProjectForm({ ...projectForm, image: url })); }} style={{ fontSize: 12 }} />
-                </div>
-              </div>
+              <ImageField
+                label="Project Image"
+                value={projectForm.image}
+                onChange={url => setProjectForm({ ...projectForm, image: url })}
+                onUpload={handleImageUpload}
+                uploadedAssets={uploadedAssets}
+                placeholder="https://images.unsplash.com/... or browse file"
+              />
               <input type="text" placeholder="Completion Date (e.g. Dec 2027)" value={projectForm.completionDate} onChange={e => setProjectForm({ ...projectForm, completionDate: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
               <div style={{ display: "flex", gap: 12 }}>
                 <select value={projectForm.status} onChange={e => setProjectForm({ ...projectForm, status: e.target.value })} style={{ flex: 1, padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }}>
@@ -543,7 +569,16 @@ export default function AdminDashboard() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             {projects.map(proj => (
               <div key={proj.id} style={{ display: "flex", gap: 16, padding: 16, border: "1px solid #E5E7EB", borderRadius: 8 }}>
-                <img src={proj.image} alt="" style={{ width: 140, height: 100, objectFit: "cover", borderRadius: 6 }} />
+                <img
+                  src={getImageUrl(proj.image)}
+                  alt=""
+                  style={{ width: 140, height: 100, objectFit: "cover", borderRadius: 6, background: "#F3F4F6" }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    if (proj.image && proj.image.startsWith("/uploads/")) e.target.src = proj.image;
+                    else e.target.src = "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=500&q=80";
+                  }}
+                />
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                     <strong style={{ fontSize: 16 }}>{proj.title}</strong>
@@ -572,13 +607,14 @@ export default function AdminDashboard() {
               <input type="text" placeholder="Article Title" value={insightForm.title} onChange={e => setInsightForm({ ...insightForm, title: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
               <input type="text" placeholder="Category (e.g. Press Release, Innovation)" value={insightForm.category} onChange={e => setInsightForm({ ...insightForm, category: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
               <input type="text" placeholder="Date (e.g. May 29, 2026)" value={insightForm.date} onChange={e => setInsightForm({ ...insightForm, date: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-              <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                <input type="text" placeholder="Image URL" value={insightForm.imageUrl || ""} onChange={e => setInsightForm({ ...insightForm, imageUrl: e.target.value })} style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", width: "100%", boxSizing: "border-box" }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 12, color: "#6B7280" }}>Or upload:</span>
-                  <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setInsightForm({ ...insightForm, imageUrl: url })); }} style={{ fontSize: 12 }} />
-                </div>
-              </div>
+              <ImageField
+                label="Article Image"
+                value={insightForm.imageUrl}
+                onChange={url => setInsightForm({ ...insightForm, imageUrl: url })}
+                onUpload={handleImageUpload}
+                uploadedAssets={uploadedAssets}
+                placeholder="https://images.unsplash.com/... or browse file"
+              />
             </div>
             <textarea placeholder="Summary Excerpt" value={insightForm.summary} onChange={e => setInsightForm({ ...insightForm, summary: e.target.value })} required style={{ width: "100%", padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", height: 60, marginBottom: 16 }} />
             <textarea placeholder="Full Article Content" value={insightForm.content} onChange={e => setInsightForm({ ...insightForm, content: e.target.value })} required style={{ width: "100%", padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", height: 120, marginBottom: 16 }} />
@@ -593,7 +629,18 @@ export default function AdminDashboard() {
             {insights.map(item => (
               <div key={item.id} style={{ padding: 16, border: "1px solid #E5E7EB", borderRadius: 8, background: "white" }}>
                 <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                  {item.imageUrl && <img src={item.imageUrl} alt="" style={{ width: 100, height: 70, objectFit: "cover", borderRadius: 6, flexShrink: 0 }} />}
+                  {item.imageUrl && (
+                    <img
+                      src={getImageUrl(item.imageUrl)}
+                      alt=""
+                      style={{ width: 100, height: 70, objectFit: "cover", borderRadius: 6, flexShrink: 0, background: "#F3F4F6" }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        if (item.imageUrl && item.imageUrl.startsWith("/uploads/")) e.target.src = item.imageUrl;
+                        else e.target.src = "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&q=80";
+                      }}
+                    />
+                  )}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                       <strong style={{ fontSize: 17, color: "#111827" }}>{item.title}</strong>
@@ -695,15 +742,33 @@ export default function AdminDashboard() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20 }}>
             {uploadedAssets.map(asset => (
               <div key={asset.name} style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 12, background: "white", display: "flex", flexDirection: "column", gap: 10 }}>
-                <img src={asset.url} alt="" style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: 4, background: "#F3F4F6" }} />
-                <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", fontSize: 12, fontWeight: 600, color: "#374151" }}>{asset.name}</div>
+                <img
+                  src={getImageUrl(asset.url)}
+                  alt=""
+                  style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: 4, background: "#F3F4F6" }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = asset.url;
+                  }}
+                />
+                <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", fontSize: 12, fontWeight: 600, color: "#374151" }} title={asset.name}>
+                  {asset.name}
+                </div>
                 <div style={{ display: "flex", gap: 6 }}>
                   <button onClick={() => { navigator.clipboard.writeText(asset.url); alert("Copied URL to clipboard!"); }} style={{ flex: 1, padding: "6px 12px", fontSize: 11, background: "#1D4ED8", color: "white", border: "none", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}>
                     Copy Link
                   </button>
-                  <a href={asset.url} target="_blank" rel="noopener noreferrer" style={{ padding: "6px 12px", fontSize: 11, background: "#E5E7EB", color: "#374151", border: "none", borderRadius: 4, textDecoration: "none", textAlign: "center", fontWeight: 600 }}>
+                  <a href={getImageUrl(asset.url)} target="_blank" rel="noopener noreferrer" style={{ padding: "6px 12px", fontSize: 11, background: "#E5E7EB", color: "#374151", border: "none", borderRadius: 4, textDecoration: "none", textAlign: "center", fontWeight: 600 }}>
                     Open
                   </a>
+                  <button onClick={async () => {
+                    if (window.confirm(`Delete ${asset.name}?`)) {
+                      await fetch(`${API_BASE}/uploads/${asset.name}`, { method: "DELETE", headers: getHeaders() });
+                      fetchAssets();
+                    }
+                  }} style={{ padding: "6px 10px", fontSize: 11, background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}>
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
@@ -817,13 +882,14 @@ export default function AdminDashboard() {
               <div style={{ display: "grid", gap: 12 }}>
                 <input type="text" placeholder="Title (e.g. Sales & Business Management)" value={teamDivisionForm.title} onChange={e => setTeamDivisionForm({ ...teamDivisionForm, title: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
                 <textarea placeholder="Description" value={teamDivisionForm.description} onChange={e => setTeamDivisionForm({ ...teamDivisionForm, description: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", height: 100 }} />
-                <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-                  <input type="text" placeholder="Image URL" value={teamDivisionForm.imageUrl} onChange={e => setTeamDivisionForm({ ...teamDivisionForm, imageUrl: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 12, color: "#6B7280" }}>Or upload:</span>
-                    <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setTeamDivisionForm({ ...teamDivisionForm, imageUrl: url })); }} style={{ fontSize: 12 }} />
-                  </div>
-                </div>
+                <ImageField
+                  label="Division Image"
+                  value={teamDivisionForm.imageUrl}
+                  onChange={url => setTeamDivisionForm({ ...teamDivisionForm, imageUrl: url })}
+                  onUpload={handleImageUpload}
+                  uploadedAssets={uploadedAssets}
+                  placeholder="https://images.unsplash.com/... or browse file"
+                />
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#4B5563", marginBottom: 4 }}>Division Bullets / Services (One item per line)</label>
                   <textarea placeholder="Client Relationship Management&#10;Market Research & Analysis" value={teamDivisionForm.bulletsInput} onChange={e => setTeamDivisionForm({ ...teamDivisionForm, bulletsInput: e.target.value })} style={{ width: "100%", height: 100, padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", fontFamily: "inherit" }} />
@@ -845,7 +911,16 @@ export default function AdminDashboard() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       {td.imageUrl && (
-                        <img src={td.imageUrl} alt="" style={{ width: 60, height: 45, objectFit: "cover", borderRadius: 4 }} />
+                        <img
+                          src={getImageUrl(td.imageUrl)}
+                          alt=""
+                          style={{ width: 60, height: 45, objectFit: "cover", borderRadius: 4, background: "#F3F4F6" }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            if (td.imageUrl && td.imageUrl.startsWith("/uploads/")) e.target.src = td.imageUrl;
+                            else e.target.src = "https://images.unsplash.com/photo-1552581230-26425a3d4b6f?w=500&q=80";
+                          }}
+                        />
                       )}
                       <div>
                         <strong style={{ fontSize: 16, color: "#1D4ED8" }}>{td.title}</strong>
@@ -905,11 +980,14 @@ export default function AdminDashboard() {
                   <input type="text" placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing" value={vlogForm.driveUrl} onChange={e => setVlogForm({ ...vlogForm, driveUrl: e.target.value })} style={{ width: "100%", padding: "10px 12px", borderRadius: 4, border: "1px solid #BFDBFE", fontSize: 13, boxSizing: "border-box" }} />
                   <p style={{ fontSize: 11, color: "#1D4ED8", margin: "4px 0 0" }}>Share → Copy link from Google Drive. Auto-converted to /preview embed — plays without leaving this site.</p>
                 </div>
-                <input type="text" placeholder="Thumbnail Image URL" value={vlogForm.thumbnailUrl} onChange={e => setVlogForm({ ...vlogForm, thumbnailUrl: e.target.value })} style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B7280" }}>
-                  <span>Or upload thumbnail:</span>
-                  <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setVlogForm({ ...vlogForm, thumbnailUrl: url })); }} style={{ fontSize: 12 }} />
-                </div>
+                <ImageField
+                  label="Thumbnail Image"
+                  value={vlogForm.thumbnailUrl}
+                  onChange={url => setVlogForm({ ...vlogForm, thumbnailUrl: url })}
+                  onUpload={handleImageUpload}
+                  uploadedAssets={uploadedAssets}
+                  placeholder="https://images.unsplash.com/... or browse file"
+                />
                 <select value={vlogForm.category} onChange={e => setVlogForm({ ...vlogForm, category: e.target.value })} style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", background: "white" }}>
                   {["Construction", "Interior Design", "3D Visualization", "Site Tour", "Testimonial", "Tips & Tricks"].map(c => <option key={c}>{c}</option>)}
                 </select>
@@ -929,7 +1007,18 @@ export default function AdminDashboard() {
               {vlogs.map(v => (
                 <div key={v.id} style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 16, background: "white" }}>
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                    {v.thumbnailUrl && <img src={v.thumbnailUrl} alt="" style={{ width: 80, height: 56, objectFit: "cover", borderRadius: 6, flexShrink: 0 }} />}
+                    {v.thumbnailUrl && (
+                      <img
+                        src={getImageUrl(v.thumbnailUrl)}
+                        alt=""
+                        style={{ width: 80, height: 56, objectFit: "cover", borderRadius: 6, flexShrink: 0, background: "#F3F4F6" }}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          if (v.thumbnailUrl && v.thumbnailUrl.startsWith("/uploads/")) e.target.src = v.thumbnailUrl;
+                          else e.target.src = "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=500&q=80";
+                        }}
+                      />
+                    )}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                         <div style={{ flex: 1 }}>
@@ -995,14 +1084,14 @@ export default function AdminDashboard() {
                   <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Founder Role</label>
                   <input type="text" placeholder="Founder & Managing Director" value={aboutFounderForm.founderRole} onChange={e => setAboutFounderForm({ ...aboutFounderForm, founderRole: e.target.value })} required style={{ width: "100%", padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", boxSizing: "border-box" }} />
                 </div>
-                <div>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Founder Image URL</label>
-                  <input type="text" placeholder="Image URL" value={aboutFounderForm.imageUrl} onChange={e => setAboutFounderForm({ ...aboutFounderForm, imageUrl: e.target.value })} style={{ width: "100%", padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", boxSizing: "border-box" }} />
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B7280" }}>
-                  <span>Or upload photo:</span>
-                  <input type="file" accept="image/*" onChange={e => { if (e.target.files[0]) handleImageUpload(e.target.files[0], url => setAboutFounderForm({ ...aboutFounderForm, imageUrl: url })); }} style={{ fontSize: 12 }} />
-                </div>
+                <ImageField
+                  label="Founder Photo"
+                  value={aboutFounderForm.imageUrl}
+                  onChange={url => setAboutFounderForm({ ...aboutFounderForm, imageUrl: url })}
+                  onUpload={handleImageUpload}
+                  uploadedAssets={uploadedAssets}
+                  placeholder="https://images.unsplash.com/... or browse file"
+                />
                 <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
                   <button type="submit" style={{ flex: 1, padding: 12, background: "#1D4ED8", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Save Founder Info</button>
                   {aboutFounderForm.id && (
@@ -1020,7 +1109,18 @@ export default function AdminDashboard() {
               {aboutFounders.map(af => (
                 <div key={af.id} style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 20, background: "white" }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    {af.imageUrl && <img src={af.imageUrl} alt="" style={{ width: 100, height: 120, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />}
+                    {af.imageUrl && (
+                      <img
+                        src={getImageUrl(af.imageUrl)}
+                        alt=""
+                        style={{ width: 100, height: 120, objectFit: "cover", borderRadius: 8, flexShrink: 0, background: "#F3F4F6" }}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          if (af.imageUrl && af.imageUrl.startsWith("/uploads/")) e.target.src = af.imageUrl;
+                          else e.target.src = "/uploads/2e0e9834-f625-40a0-9016-17a4c83b50d3.png";
+                        }}
+                      />
+                    )}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                         <div>

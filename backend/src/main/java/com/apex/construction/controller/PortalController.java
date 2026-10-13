@@ -640,22 +640,35 @@ public class PortalController {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
             }
-            String uploadDir = "../frontend/public/uploads";
-            File directory = new File(uploadDir);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
             String originalFilename = file.getOriginalFilename();
             String extension = "";
             if (originalFilename != null && originalFilename.contains(".")) {
                 extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             }
             String newFilename = UUID.randomUUID().toString() + extension;
-            Path path = Paths.get(uploadDir, newFilename);
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            // 1. Save to backend/uploads
+            Path backendDir = Paths.get("uploads").toAbsolutePath();
+            if (!Files.exists(backendDir)) {
+                Files.createDirectories(backendDir);
+            }
+            Path backendFilePath = backendDir.resolve(newFilename);
+            Files.copy(file.getInputStream(), backendFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // 2. Also copy to frontend/public/uploads if accessible locally
+            try {
+                Path frontendDir = Paths.get("../frontend/public/uploads").toAbsolutePath();
+                if (Files.exists(frontendDir.getParent())) {
+                    if (!Files.exists(frontendDir)) {
+                        Files.createDirectories(frontendDir);
+                    }
+                    Files.copy(backendFilePath, frontendDir.resolve(newFilename), StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (Exception ignored) {
+            }
 
             String fileUrl = "/uploads/" + newFilename;
-            return ResponseEntity.ok(Map.of("url", fileUrl));
+            return ResponseEntity.ok(Map.of("url", fileUrl, "name", newFilename));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Failed to upload file: " + e.getMessage()));
@@ -665,20 +678,25 @@ public class PortalController {
     @GetMapping("/uploads")
     public ResponseEntity<?> listUploadedFiles() {
         try {
-            String uploadDir = "../frontend/public/uploads";
-            File directory = new File(uploadDir);
-            if (!directory.exists()) {
-                return ResponseEntity.ok(Collections.emptyList());
-            }
-            File[] files = directory.listFiles();
+            Set<String> seen = new HashSet<>();
             List<Map<String, String>> fileList = new ArrayList<>();
-            if (files != null) {
-                for (File f : files) {
-                    if (f.isFile()) {
-                        fileList.add(Map.of(
-                            "name", f.getName(),
-                            "url", "/uploads/" + f.getName()
-                        ));
+            List<File> directories = List.of(
+                new File("uploads"),
+                new File("../frontend/public/uploads")
+            );
+
+            for (File directory : directories) {
+                if (directory.exists() && directory.isDirectory()) {
+                    File[] files = directory.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (f.isFile() && seen.add(f.getName())) {
+                                fileList.add(Map.of(
+                                    "name", f.getName(),
+                                    "url", "/uploads/" + f.getName()
+                                ));
+                            }
+                        }
                     }
                 }
             }
@@ -686,6 +704,22 @@ public class PortalController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Failed to list files: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/uploads/{filename}")
+    public ResponseEntity<?> deleteUploadedFile(@PathVariable String filename, @RequestHeader(value = "Authorization", required = false) String auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        try {
+            for (File directory : List.of(new File("uploads"), new File("../frontend/public/uploads"))) {
+                File target = new File(directory, filename);
+                if (target.exists()) {
+                    target.delete();
+                }
+            }
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
 

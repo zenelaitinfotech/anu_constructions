@@ -1,0 +1,10 @@
+{
+  "name": "anu-constructions",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:live": "npm --prefix frontend run dev:live",
+    "build": "npm --prefix frontend run build",
+    "backend": "cd backend && mvnw.cmd spring-boot:run"
+  }
+}

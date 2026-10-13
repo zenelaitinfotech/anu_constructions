@@ -74,22 +74,34 @@ export default function Navbar({ setPage }) {
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(17,24,39,0.98)" : "rgba(17,24,39,0.95)", backdropFilter: "blur(8px)", boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.4)" : "none", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 68 }}>
+      <div style={{ maxWidth: 1440, width: "100%", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 68 }}>
         {/* Logo */}
-        <button onClick={() => { setPage("home"); setMobileOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <span style={{ color: "white", fontWeight: 700, fontSize: 28, fontFamily: "Georgia,serif", fontStyle: "italic", letterSpacing: "-0.5px" }}><img src="/anu_construction.png" alt="Logo" width={250} height={65} /></span>
+        <button onClick={() => { setPage("home"); setMobileOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <img src="/anu_construction.png" alt="Anu Building Constructions Logo" style={{ height: 50, width: "auto", borderRadius: "8px", objectFit: "contain", display: "block" }} />
         </button>
 
         {/* Desktop nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, justifyContent: "center", flexWrap: "nowrap", minWidth: 0 }}>
           {NAV_ITEMS.map(item => (
-            <div key={item.label} style={{ position: "relative" }}
+            <div key={item.label} style={{ position: "relative", flexShrink: 0 }}
               onMouseEnter={() => item.sections && handleMouseEnter(item.label)}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 onClick={() => { if (item.page) { setPage(item.page); setOpenMenu(null); } }}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "22px 16px", fontSize: 14, fontWeight: 500, color: openMenu === item.label ? "#fff" : "#D1D5DB", transition: "color 0.2s", position: "relative" }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "20px 13px",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: openMenu === item.label ? "#fff" : "#D1D5DB",
+                  transition: "color 0.2s",
+                  position: "relative",
+                  whiteSpace: "nowrap",
+                  letterSpacing: "-0.1px"
+                }}
               >
                 {item.label}
                 {openMenu === item.label && <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: "#EF4444" }} />}
@@ -99,16 +111,16 @@ export default function Navbar({ setPage }) {
         </div>
 
         {/* Right CTAs */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => setPage("admin")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: 13, padding: "8px 12px", transition: "color 0.2s" }}
+        <div className="desktop-ctas" style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button onClick={() => setPage("admin")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: 13, padding: "8px 10px", transition: "color 0.2s", whiteSpace: "nowrap" }}
             onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#9CA3AF"}>
             Admin Portal
           </button>
-          <button onClick={() => setPage("contact")} style={{ background: "none", border: "none", cursor: "pointer", color: "#D1D5DB", fontSize: 14, padding: "8px 12px", transition: "color 0.2s" }}
+          <button onClick={() => setPage("contact")} style={{ background: "none", border: "none", cursor: "pointer", color: "#D1D5DB", fontSize: 13, padding: "8px 10px", transition: "color 0.2s", whiteSpace: "nowrap" }}
             onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#D1D5DB"}>
             Contact Us
           </button>
-          <button onClick={() => setPage("contact")} style={{ background: "#1D4ED8", border: "none", borderRadius: "10px", cursor: "pointer", color: "white", fontSize: 13, fontWeight: 600, padding: "10px 18px", transition: "background 0.2s", letterSpacing: "0.02em" }}
+          <button onClick={() => setPage("contact")} style={{ background: "#1D4ED8", border: "none", borderRadius: "8px", cursor: "pointer", color: "white", fontSize: 13, fontWeight: 600, padding: "9px 16px", transition: "background 0.2s", letterSpacing: "0.01em", whiteSpace: "nowrap" }}
             onMouseEnter={e => e.target.style.background = "#1E40AF"} onMouseLeave={e => e.target.style.background = "#1D4ED8"}>
             Become a Subcontractor
           </button>
@@ -283,10 +295,10 @@ export default function Navbar({ setPage }) {
       )}
 
       <style>{`
-        @media(max-width:768px){
+        @media(max-width:1120px){
           .mobile-toggle{display:block!important;}
-          nav > div > div:nth-child(2){display:none!important;}
-          nav > div > div:nth-child(3){display:none!important;}
+          .desktop-nav{display:none!important;}
+          .desktop-ctas{display:none!important;}
         }
       `}</style>
     </nav>

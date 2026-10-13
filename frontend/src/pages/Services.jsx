@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SERVICES_DATA } from "../utils/constants";
-import API_BASE from "../config/api";
+import API_BASE, { getImageUrl } from "../config/api";
 
 const FALLBACK_EXPERTISE = [
   "Foundation & Structural Engineering", "RCC Frame Construction",
@@ -58,7 +58,7 @@ export default function Services() {
           const mapped = data.map(s => ({
             title: s.title,
             descText: s.descText || getDetailedServiceDesc(s.title),
-            img: s.img
+            img: getImageUrl(s.img)
           }));
           setServices(mapped);
         }
@@ -66,7 +66,14 @@ export default function Services() {
 
     const fetchExpertise = fetch(`${API_BASE}/api/expertise`)
       .then(res => res.json())
-      .then(data => { if (data && data.length > 0) setExpertise(data); });
+      .then(data => {
+        if (data && data.length > 0) {
+          setExpertise(data.map(e => ({
+            ...e,
+            imageUrl: getImageUrl(e.imageUrl)
+          })));
+        }
+      });
 
     Promise.allSettled([fetchServices, fetchExpertise])
       .finally(() => setLoading(false));
@@ -165,6 +172,11 @@ export default function Services() {
                         height: 400,
                         objectFit: "cover",
                         transition: "transform 0.6s"
+                      }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        if (s.img && s.img.startsWith("/uploads/")) e.target.src = s.img;
+                        else e.target.src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&q=80";
                       }}
                       onMouseEnter={e => e.target.style.transform = "scale(1.08)"}
                       onMouseLeave={e => e.target.style.transform = "scale(1)"}

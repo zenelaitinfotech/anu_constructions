@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Hero from "../components/Hero/Hero";
 import { STATS, SERVICES_DATA, PROJECTS_DATA, MARKET_SECTORS, NEWS_DATA } from "../utils/constants";
-import API_BASE from "../config/api";
+import API_BASE, { getImageUrl } from "../config/api";
 
 export default function Home({ setPage }) {
   const [stats, setStats] = useState(STATS);
@@ -42,7 +42,7 @@ export default function Home({ setPage }) {
           setServices(data.map(s => ({
             title: s.title,
             desc: s.descText || s.description,
-            img: s.img
+            img: getImageUrl(s.img)
           })));
         }
       })
@@ -57,7 +57,7 @@ export default function Home({ setPage }) {
             title: p.title,
             cat: p.category,
             location: p.location,
-            img: p.image,
+            img: getImageUrl(p.image),
             desc: p.description
           })));
         }
@@ -363,9 +363,17 @@ export default function Home({ setPage }) {
               <div style={{ position: "absolute", inset: "-15px", border: "2px solid #1D4ED8", borderRadius: 24, transform: "rotate(-2deg)", zIndex: 1, pointerEvents: "none" }} />
               <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.12)", zIndex: 2 }}>
                 <img
-                  src={aboutFounder.imageUrl || "/uploads/2e0e9834-f625-40a0-9016-17a4c83b50d3.png"}
+                  src={getImageUrl(aboutFounder.imageUrl || "/uploads/2e0e9834-f625-40a0-9016-17a4c83b50d3.png")}
                   alt={aboutFounder.founderName}
                   style={{ width: "100%", height: 500, objectFit: "cover", display: "block" }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    if (aboutFounder.imageUrl && aboutFounder.imageUrl.startsWith("/uploads/")) {
+                      e.target.src = aboutFounder.imageUrl;
+                    } else {
+                      e.target.src = "/uploads/2e0e9834-f625-40a0-9016-17a4c83b50d3.png";
+                    }
+                  }}
                 />
               </div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { PROJECTS_DATA } from "../utils/constants";
-import API_BASE from "../config/api";
+import API_BASE, { getImageUrl } from "../config/api";
 
 // Map titles to rich descriptions to add detail to Projects page cards
 const getProjectDesc = (title) => {
@@ -43,7 +43,7 @@ export default function Projects() {
             cat: p.category || p.cat,
             location: p.location,
             title: p.title,
-            img: p.image || p.img,
+            img: getImageUrl(p.image || p.img),
             desc: p.description || getProjectDesc(p.title)
           }));
           setProjectsList(mapped);
@@ -123,9 +123,19 @@ export default function Projects() {
                       e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.04)";
                       e.currentTarget.querySelector("h3").style.color="#111827";
                     }}>
-                    <div style={{ height:340, overflow:"hidden", position:"relative" }}>
-                      <img src={p.img} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.5s" }}
-                        onMouseEnter={e=>e.target.style.transform="scale(1.06)"} onMouseLeave={e=>e.target.style.transform="scale(1)"} />
+                      <div style={{ height: 340, overflow: "hidden", position: "relative" }}>
+                        <img
+                          src={p.img}
+                          alt={p.title}
+                          style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.5s" }}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          if (p.img && p.img.startsWith("/uploads/")) e.target.src = p.img;
+                          else e.target.src = "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=500&q=80";
+                        }}
+                        onMouseEnter={e=>e.target.style.transform="scale(1.06)"}
+                        onMouseLeave={e=>e.target.style.transform="scale(1)"}
+                      />
                       <div style={{ position:"absolute", top:16, left:16, background:"#1D4ED8", padding:"6px 14px", borderRadius: 4 }}>
                         <span style={{ color:"white", fontSize:12, fontWeight:700, textTransform: "uppercase", letterSpacing: "0.05em" }}>{p.cat}</span>
                       </div>

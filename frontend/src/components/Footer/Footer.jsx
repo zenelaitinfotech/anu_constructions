@@ -5,7 +5,9 @@ export default function Footer({ setPage }) {
     <footer style={{ background: "#1D4ED8" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "4rem 2rem 3rem", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 40 }}>
         <div>
-          <span style={{ color: "white", fontWeight: 700, fontSize: 28, fontFamily: "Georgia,serif", fontStyle: "italic", display: "block", marginBottom: 20 }}><img src="/anu_construction.png" alt="Logo" width={240} height={85} /></span>
+          <span style={{ display: "inline-block", marginBottom: 20, borderRadius: "12px", overflow: "hidden" }}>
+            <img src="/anu_construction.png" alt="Anu Building Constructions Logo" width={230} height={80} style={{ borderRadius: "12px", display: "block", objectFit: "contain" }} />
+          </span>
           <p style={{ color: "#BFDBFE", fontSize: 13, lineHeight: 1.8, maxWidth: 240, marginBottom: 24 }}>
             Making a difference in the lives of our people, customers, and community since 2025.
           </p>
@@ -38,9 +40,10 @@ export default function Footer({ setPage }) {
           </div>
         ))}
         <div>
-          <span style={{ color: "white", fontWeight: 70, fontSize: 15, fontFamily: "Georgia,serif", fontStyle: "italic", display: "block", marginBottom: 20 }}>Developed By:</span>
-          <img src="/zenelaitinfotech_logo.png" alt="Logo" style={{ width: 180, height: "auto", objectFit: "contain", imageRendering: "auto" }} />
-
+          <span style={{ color: "white", fontWeight: 500, fontSize: 15, fontFamily: "Georgia,serif", fontStyle: "italic", display: "block", marginBottom: 18 }}>Developed By:</span>
+          <div style={{ display: "inline-block", borderRadius: "12px", overflow: "hidden" }}>
+            <img src="/zenelaitinfotech_logo.png" alt="Zenelait Infotech Logo" style={{ width: 180, height: "auto", objectFit: "contain", imageRendering: "auto", borderRadius: "12px", display: "block" }} />
+          </div>
         </div>
       </div>
       <div className="moving-gradient-bg" style={{ borderTop: "1px solid rgba(255,255,255,0.2)", padding: "1.5rem 2rem" }}>
