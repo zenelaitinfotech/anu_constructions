@@ -56,6 +56,7 @@ export default function App() {
     admin: <AdminDashboard />,
     "our-company": <OurCompany setPage={setPageAndScroll} />,
     vlog: <Vlog />,
+    blog: <Vlog />,
 
     // Our Company
     "about-us": <AboutUs />,
@@ -348,13 +349,15 @@ export default function App() {
         }
         .flip-card-front, .flip-card-back {
           position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
-          -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden !important;
+          backface-visibility: hidden !important;
           border-radius: 12px;
           border: 1px solid #E5E7EB;
           box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+          overflow: hidden;
         }
         .flip-card-front {
           background-color: white;
@@ -363,6 +366,8 @@ export default function App() {
           flex-direction: column;
           justify-content: space-between;
           padding: 2rem;
+          transform: rotateY(0deg);
+          z-index: 2;
         }
         .flip-card-back {
           background-color: #1D4ED8;
@@ -373,6 +378,13 @@ export default function App() {
           justify-content: center;
           align-items: center;
           padding: 2rem;
+          z-index: 1;
+        }
+        .flip-card:hover .flip-card-front {
+          z-index: 1;
+        }
+        .flip-card:hover .flip-card-back {
+          z-index: 2;
         }
 
         .to-be-scaled {

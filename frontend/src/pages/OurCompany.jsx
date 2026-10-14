@@ -11,7 +11,7 @@ const FALLBACK_DIVISIONS = [
       "Sales Prospecting & Qualification",
       "Negotiation & Contract Management"
     ],
-    imageUrl: "https://images.unsplash.com/photo-1552581230-26425a3d4b6f?w=600&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
   },
   {
     title: "Design & Innovation",
@@ -40,7 +40,13 @@ export default function OurCompany({ setPage }) {
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
-          setDivisions(data);
+          const sanitized = data.map(d => {
+            if (!d.imageUrl || d.imageUrl.includes("1552581230")) {
+              return { ...d, imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" };
+            }
+            return d;
+          });
+          setDivisions(sanitized);
         }
       })
       .catch(err => console.log("Failed fetching team divisions, using defaults.", err));
@@ -172,9 +178,13 @@ export default function OurCompany({ setPage }) {
 
                 <div style={{ order: idx % 2 === 0 ? 2 : 1, overflow: "hidden", borderRadius: 12 }}>
                   <img
-                    src={division.imageUrl || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&q=80"}
+                    src={division.imageUrl || "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"}
                     alt={division.title}
-                    style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 12 }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80";
+                    }}
+                    style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 12, display: "block" }}
                   />
                 </div>
               </div>

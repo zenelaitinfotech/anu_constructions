@@ -3,7 +3,7 @@ import React from "react";
 export default function Footer({ setPage }) {
   return (
     <footer style={{ background: "#1D4ED8" }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "4rem 2rem 3rem", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 40 }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "4rem 2rem 3rem", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1.2fr", gap: 40 }}>
         <div>
           <span style={{ display: "inline-block", marginBottom: 20, borderRadius: "12px", overflow: "hidden" }}>
             <img src="/anu_construction.png" alt="Anu Building Constructions Logo" width={230} height={80} style={{ borderRadius: "12px", display: "block", objectFit: "contain" }} />
@@ -41,9 +41,21 @@ export default function Footer({ setPage }) {
         ))}
         <div>
           <span style={{ color: "white", fontWeight: 500, fontSize: 15, fontFamily: "Georgia,serif", fontStyle: "italic", display: "block", marginBottom: 18 }}>Developed By:</span>
-          <div style={{ display: "inline-block", borderRadius: "12px", overflow: "hidden" }}>
-            <img src="/zenelaitinfotech_logo.png" alt="Zenelait Infotech Logo" style={{ width: 180, height: "auto", objectFit: "contain", imageRendering: "auto", borderRadius: "12px", display: "block" }} />
-          </div>
+          <a
+            href="https://zenelaitinfotech.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Zenelait Infotech"
+            style={{ display: "inline-block", borderRadius: "12px", overflow: "hidden", transition: "transform 0.25s ease, opacity 0.25s ease" }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.opacity = "0.95"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
+          >
+            <img
+              src="/zenelaitinfotech_logo.png"
+              alt="Zenelait Infotech Logo"
+              style={{ width: 240, maxWidth: "100%", height: "auto", objectFit: "contain", imageRendering: "auto", borderRadius: "12px", display: "block" }}
+            />
+          </a>
         </div>
       </div>
       <div className="moving-gradient-bg" style={{ borderTop: "1px solid rgba(255,255,255,0.2)", padding: "1.5rem 2rem" }}>

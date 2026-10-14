@@ -263,7 +263,7 @@ public class PortalController {
                 "Sales & Business Management",
                 "Our proactive Sales & Business Development team is dedicated to fully understanding your unique needs and delivering tailored solutions. They work closely with you to assess your requirements, recommend the most suitable options, and guide you through each step of the sales journey.",
                 List.of("Client Relationship Management", "Market Research & Analysis", "Sales Prospecting & Qualification", "Negotiation & Contract Management"),
-                "https://images.unsplash.com/photo-1552581230-26425a3d4b6f?w=600&q=80"
+                "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
             ));
 
             teamDivisionRepository.save(new TeamDivision(
@@ -279,6 +279,13 @@ public class PortalController {
                 Collections.emptyList(),
                 "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80"
             ));
+        } else {
+            for (TeamDivision td : teamDivisionRepository.findAll()) {
+                if (td.getImageUrl() != null && td.getImageUrl().contains("1552581230")) {
+                    td.setImageUrl("https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80");
+                    teamDivisionRepository.save(td);
+                }
+            }
         }
 
         if (vlogRepository.count() == 0) {

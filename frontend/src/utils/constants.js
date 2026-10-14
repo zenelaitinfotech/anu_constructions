@@ -9,7 +9,7 @@ export const NAV_ITEMS = [
     page: "services"
   },
   { label: "Our Projects", page: "projects" },
-  { label: "Vlog", page: "vlog" },
+  { label: "Blog", page: "blog" },
   { label: "News & Insights", page: "news" },
   { label: "Careers", page: "careers" },
 ];

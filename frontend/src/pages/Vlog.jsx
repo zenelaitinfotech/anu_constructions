@@ -204,7 +204,7 @@ export default function Vlog() {
             📹 Behind the Build
           </p>
           <h1 style={{ color:"white", fontSize:56, fontWeight:300, margin:"0 0 20px", lineHeight:1.1 }}>
-            Our <strong style={{ fontWeight:800 }}>Vlogs</strong>
+            Our <strong style={{ fontWeight:800 }}>Blogs</strong>
           </h1>
           <p style={{ color:"#9CA3AF", fontSize:18, maxWidth:560, lineHeight:1.8, margin:0 }}>
             Watch time-lapses, design reveals, 3D walkthroughs, and client stories — all without leaving this page.
@@ -224,7 +224,7 @@ export default function Vlog() {
         </div>
       </section>
 
-      {/* ── Vlogs Grid ───────────────────────────────────────────────────── */}
+      {/* ── Blogs Grid ───────────────────────────────────────────────────── */}
       <section style={{ background:"#F9FAFB", padding:"5rem 0" }}>
         <div style={{ maxWidth:1280, margin:"0 auto", padding:"0 2rem" }}>
           {loading ? (
@@ -235,7 +235,7 @@ export default function Vlog() {
           ) : filtered.length === 0 ? (
             <div style={{ textAlign:"center", padding:"5rem 0", color:"#9CA3AF" }}>
               <div style={{ fontSize:56, marginBottom:16 }}>📭</div>
-              <p style={{ fontSize:18, fontWeight:600 }}>No vlogs in this category yet.</p>
+              <p style={{ fontSize:18, fontWeight:600 }}>No blogs in this category yet.</p>
             </div>
           ) : (
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:28 }}>

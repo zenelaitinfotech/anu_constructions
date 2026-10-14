@@ -333,7 +333,7 @@ export default function AdminDashboard() {
           { key: "inquiries", label: "📩 Inquiries" },
           { key: "esg", label: "🌿 ESG" },
           { key: "team", label: "👥 Team" },
-          { key: "vlog", label: "📹 Vlog" },
+          { key: "vlog", label: "📰 Blog" },
           { key: "founder", label: "👤 Founder" },
         ].map(({ key, label }) => (
           <button key={key} onClick={() => setActiveTab(key)} style={{
@@ -942,12 +942,12 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Vlog Tab */}
+      {/* Blog Tab */}
       {activeTab === "vlog" && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
           {/* Form */}
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 20 }}>Manage Vlogs</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 20 }}>Manage Blogs</h2>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -960,11 +960,11 @@ export default function AdminDashboard() {
                   const fresh = await fetch(`${API_BASE}/vlogs`);
                   if (fresh.ok) setVlogs(await fresh.json());
                   setVlogForm({ id: null, title: "", description: "", videoUrl: "", driveUrl: "", thumbnailUrl: "", category: "Construction", date: "" });
-                } else { alert("Failed to save vlog."); }
+                } else { alert("Failed to save blog."); }
               }}
               style={{ background: "#F9FAFB", padding: 24, borderRadius: 8, border: "1px solid #E5E7EB", display: "grid", gap: 16 }}
             >
-              <h3 style={{ fontSize: 15, fontWeight: 700 }}>{vlogForm.id ? "Edit Vlog" : "Add New Vlog"}</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700 }}>{vlogForm.id ? "Edit Blog" : "Add New Blog"}</h3>
               <div style={{ display: "grid", gap: 12 }}>
                 <input type="text" placeholder="Title" value={vlogForm.title} onChange={e => setVlogForm({ ...vlogForm, title: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
                 <textarea placeholder="Description" value={vlogForm.description} onChange={e => setVlogForm({ ...vlogForm, description: e.target.value })} style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB", height: 80, fontFamily: "inherit" }} />
@@ -993,7 +993,7 @@ export default function AdminDashboard() {
                 </select>
                 <input type="text" placeholder="Date (e.g. May 30, 2026)" value={vlogForm.date} onChange={e => setVlogForm({ ...vlogForm, date: e.target.value })} required style={{ padding: 12, borderRadius: 4, border: "1px solid #D1D5DB" }} />
                 <div style={{ display: "flex", gap: 10 }}>
-                  <button type="submit" style={{ flex: 1, padding: 12, background: "#1D4ED8", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Save Vlog</button>
+                  <button type="submit" style={{ flex: 1, padding: 12, background: "#1D4ED8", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Save Blog</button>
                   {vlogForm.id && <button type="button" onClick={() => setVlogForm({ id: null, title: "", description: "", videoUrl: "", thumbnailUrl: "", category: "Construction", date: "" })} style={{ padding: 12, background: "#6B7280", color: "white", border: "none", cursor: "pointer" }}>Cancel</button>}
                 </div>
               </div>
@@ -1002,7 +1002,7 @@ export default function AdminDashboard() {
 
           {/* List */}
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 20 }}>Existing Vlogs ({vlogs.length})</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 20 }}>Existing Blogs ({vlogs.length})</h2>
             <div style={{ display: "grid", gap: 16 }}>
               {vlogs.map(v => (
                 <div key={v.id} style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 16, background: "white" }}>
@@ -1028,14 +1028,14 @@ export default function AdminDashboard() {
                         </div>
                         <div style={{ display: "flex", gap: 6, flexShrink: 0, marginLeft: 8 }}>
                           <button onClick={() => setVlogForm({ ...v, description: v.description || "", videoUrl: v.videoUrl || "", thumbnailUrl: v.thumbnailUrl || "" })} style={{ padding: "4px 8px", fontSize: 11, background: "#E5E7EB", border: "none", cursor: "pointer" }}>Edit</button>
-                          <button onClick={async () => { if (window.confirm("Delete this vlog?")) { await fetch(`${API_BASE}/vlogs/${v.id}`, { method: "DELETE", headers: getHeaders() }); setVlogs(vlogs.filter(x => x.id !== v.id)); } }} style={{ padding: "4px 8px", fontSize: 11, background: "#FEE2E2", color: "#EF4444", border: "none", cursor: "pointer" }}>Delete</button>
+                          <button onClick={async () => { if (window.confirm("Delete this blog?")) { await fetch(`${API_BASE}/vlogs/${v.id}`, { method: "DELETE", headers: getHeaders() }); setVlogs(vlogs.filter(x => x.id !== v.id)); } }} style={{ padding: "4px 8px", fontSize: 11, background: "#FEE2E2", color: "#EF4444", border: "none", cursor: "pointer" }}>Delete</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
-              {vlogs.length === 0 && <p style={{ color: "#9CA3AF", fontSize: 14 }}>No vlogs added yet.</p>}
+              {vlogs.length === 0 && <p style={{ color: "#9CA3AF", fontSize: 14 }}>No blogs added yet.</p>}
             </div>
           </div>
         </div>
