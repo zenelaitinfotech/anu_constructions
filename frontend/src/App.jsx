@@ -435,12 +435,21 @@ export default function App() {
             gap: 32px !important; 
           }
         }
+        /* Runnable Numbers Styling */
+        .runnable-number {
+          display: inline-block;
+          font-variant-numeric: tabular-nums;
+          transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease;
+        }
+        .runnable-number:hover {
+          transform: scale(1.04);
+        }
       `}</style>
       <Navbar setPage={setPageAndScroll} currentPage={page} />
       <main style={{ 
         paddingTop: page === "home" ? 0 : 68,
         opacity: isTransitioning ? 0 : 1,
-        transform: isTransitioning ? 'translateY(12px)' : 'translateY(0)',
+        transform: isTransitioning ? 'translateY(12px)' : 'none',
         transition: 'opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1), transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)'
       }}>
         {pages[page] || pages.home}

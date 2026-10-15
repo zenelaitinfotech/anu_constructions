@@ -1,4 +1,5 @@
 import React from "react";
+import CountUp from "../../components/Common/CountUp";
 
 const capabilities = [
   { icon: "🏗️", title: "General Contracting", desc: "Full turnkey construction delivery with comprehensive cost, schedule, and quality management." },
@@ -28,7 +29,9 @@ export default function ConstructionManagement() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, textAlign: "center" }}>
           {[{ n: "1,500+", l: "Projects Annually" }, { n: "₹500Cr+", l: "Value Managed" }, { n: "96%", l: "Client Retention" }, { n: "120+", l: "Years Experience" }].map(s => (
             <div key={s.l}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>{s.n}</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>
+                <CountUp value={s.n} />
+              </div>
               <div style={{ fontSize: 12, color: "#BFDBFE", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>{s.l}</div>
             </div>
           ))}

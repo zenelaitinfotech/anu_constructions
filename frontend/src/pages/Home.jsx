@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Hero from "../components/Hero/Hero";
 import { STATS, SERVICES_DATA, PROJECTS_DATA, MARKET_SECTORS, NEWS_DATA } from "../utils/constants";
 import API_BASE, { getImageUrl } from "../config/api";
+import CountUp from "../components/Common/CountUp";
 
 export default function Home({ setPage }) {
   const [stats, setStats] = useState(STATS);
@@ -107,7 +108,9 @@ export default function Home({ setPage }) {
         <div style={{ maxWidth: 1400, margin: "0 ", padding: "0 2rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "2rem" }}>
           {stats.map(s => (
             <div key={s.label} style={{ textAlign: "center" }}>
-              <div style={{ color: "white", fontSize: 36, fontWeight: 800, lineHeight: 1 }}>{s.num}</div>
+              <div style={{ color: "white", fontSize: 36, fontWeight: 800, lineHeight: 1 }}>
+                <CountUp value={s.num} />
+              </div>
               <div style={{ color: "#BFDBFE", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 6 }}>{s.label}</div>
             </div>
           ))}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API_BASE from "../../config/api";
+import CountUp from "../../components/Common/CountUp";
 
 const FALLBACK_STATS = [
   { num: "120+", label: "Years of Excellence" },
@@ -79,7 +80,9 @@ export default function AboutUs() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, textAlign: "center" }}>
           {stats.map(s => (
             <div key={s.label}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>{s.num}</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>
+                <CountUp value={s.num} />
+              </div>
               <div style={{ fontSize: 13, color: "#BFDBFE", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>{s.label}</div>
             </div>
           ))}

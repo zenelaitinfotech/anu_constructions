@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import CountUp from "../components/Common/CountUp";
 
 const NAV_ITEMS = [
   {
@@ -277,7 +278,9 @@ function HomePage({ setPage }) {
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "2rem" }}>
           {STATS.map(s => (
             <div key={s.num} style={{ textAlign: "center" }}>
-              <div style={{ color: "white", fontSize: 36, fontWeight: 800, lineHeight: 1 }}>{s.num}</div>
+              <div style={{ color: "white", fontSize: 36, fontWeight: 800, lineHeight: 1 }}>
+                <CountUp value={s.num} />
+              </div>
               <div style={{ color: "#BFDBFE", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 6 }}>{s.label}</div>
             </div>
           ))}
@@ -494,7 +497,9 @@ function AboutPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
               {STATS.map(s => (
                 <div key={s.num} style={{ background: "#F9FAFB", padding: 16, textAlign: "center" }}>
-                  <div style={{ color: "#1D4ED8", fontSize: 22, fontWeight: 800 }}>{s.num}</div>
+                  <div style={{ color: "#1D4ED8", fontSize: 22, fontWeight: 800 }}>
+                    <CountUp value={s.num} />
+                  </div>
                   <div style={{ color: "#6B7280", fontSize: 11, fontWeight: 600, marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}

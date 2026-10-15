@@ -1,4 +1,5 @@
 import React from "react";
+import CountUp from "../../components/Common/CountUp";
 
 const safetyStats = [
   { n: "0.18", l: "TRIR (Industry avg: 2.1)", desc: "Total Recordable Incident Rate" },
@@ -37,7 +38,9 @@ export default function Safety() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>
           {safetyStats.map(s => (
             <div key={s.l} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 40, fontWeight: 900, color: "white" }}>{s.n}</div>
+              <div style={{ fontSize: 40, fontWeight: 900, color: "white" }}>
+                <CountUp value={s.n} />
+              </div>
               <div style={{ fontSize: 13, color: "#FCA5A5", fontWeight: 600, marginTop: 4 }}>{s.l}</div>
               <div style={{ fontSize: 11, color: "#FEE2E2", marginTop: 4 }}>{s.desc}</div>
             </div>

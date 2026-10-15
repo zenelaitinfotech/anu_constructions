@@ -1,4 +1,5 @@
 import React from "react";
+import CountUp from "../../components/Common/CountUp";
 
 const initiatives = [
   { 
@@ -131,7 +132,9 @@ export default function Foundation() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32, textAlign: "center" }} className="animate-fade-in-up">
           {[{ n: "₹10Cr+", l: "Total Donations" }, { n: "45", l: "Cities Impacted" }, { n: "12,000+", l: "Lives Changed" }, { n: "25+", l: "NGO Partners" }].map((s, idx) => (
             <div key={s.l} className={`stagger-${idx + 1}`}>
-              <div style={{ fontSize: 44, fontWeight: 900, color: "white" }}>{s.n}</div>
+              <div style={{ fontSize: 44, fontWeight: 900, color: "white" }}>
+                <CountUp value={s.n} />
+              </div>
               <div style={{ fontSize: 13, color: "#A7F3D0", marginTop: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>{s.l}</div>
             </div>
           ))}

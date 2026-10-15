@@ -1,4 +1,5 @@
 import React from "react";
+import CountUp from "../../components/Common/CountUp";
 
 const programs = [
   { icon: "🏗️", title: "Infrastructure for Communities", desc: "We build public facilities — community centers, libraries, and parks — at subsidized rates for underserved localities.", impact: "40+ community facilities built" },
@@ -30,7 +31,9 @@ export default function Community() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, textAlign: "center" }}>
           {[{ n: "45", l: "Cities" }, { n: "12,000+", l: "Lives Impacted" }, { n: "₹10Cr+", l: "Community Investment" }, { n: "25+", l: "NGO Partners" }].map(s => (
             <div key={s.l}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>{s.n}</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: "white" }}>
+                <CountUp value={s.n} />
+              </div>
               <div style={{ fontSize: 12, color: "#FED7AA", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>{s.l}</div>
             </div>
           ))}

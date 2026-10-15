@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { STATS } from "../utils/constants";
 import ParallaxImage from "../components/Common/ParallaxImage";
 import API_BASE from "../config/api";
+import CountUp from "../components/Common/CountUp";
 
 const FALLBACK_VALUES = [
   { title: "Quality First", description: "We use only ISI-certified materials — premium cement, TMT steel, and AAC blocks — ensuring every home we build stands strong for generations." },
@@ -74,7 +75,9 @@ export default function About() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
               {STATS.map(s => (
                 <div key={s.num} style={{ background: "#F9FAFB", padding: 16, textAlign: "center" }}>
-                  <div style={{ color: "#1D4ED8", fontSize: 22, fontWeight: 800 }}>{s.num}</div>
+                  <div style={{ color: "#1D4ED8", fontSize: 22, fontWeight: 800 }}>
+                    <CountUp value={s.num} />
+                  </div>
                   <div style={{ color: "#6B7280", fontSize: 11, fontWeight: 600, marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { SERVICES_DATA } from "../utils/constants";
 import API_BASE, { getImageUrl } from "../config/api";
 
@@ -270,13 +271,73 @@ export default function Services() {
       )}
 
       {/* Service Detail Modal */}
-      {selectedService && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(17,24,39,0.75)", backdropFilter: "blur(12px)", padding: "1.5rem", animation: "fadeInModal 0.3s ease-out" }}>
-          <div style={{ background: "white", borderRadius: 20, width: "100%", maxWidth: 840, overflow: "hidden", boxShadow: "0 25px 50px rgba(0,0,0,0.25)", border: "1px solid #E5E7EB", animation: "slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "400px 1fr", minHeight: 460 }}>
+      {selectedService && typeof document !== "undefined" && createPortal(
+        <div
+          onClick={() => setSelectedService(null)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 999999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(17,24,39,0.75)",
+            backdropFilter: "blur(12px)",
+            padding: "1.5rem",
+            boxSizing: "border-box",
+            animation: "fadeInModal 0.25s ease-out"
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: "white",
+              borderRadius: 20,
+              width: "100%",
+              maxWidth: 860,
+              maxHeight: "90vh",
+              overflow: "hidden",
+              boxShadow: "0 25px 50px rgba(0,0,0,0.3)",
+              border: "1px solid #E5E7EB",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              animation: "slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
+            }}
+          >
+            <button
+              onClick={() => setSelectedService(null)}
+              style={{
+                position: "absolute",
+                top: 14,
+                right: 14,
+                zIndex: 20,
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.9)",
+                border: "1px solid #E5E7EB",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 18,
+                color: "#374151",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
+              }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+            <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", maxHeight: "90vh", overflowY: "auto" }}>
               {/* Left Side Gallery */}
-              <div style={{ background: "#F3F4F6", display: "flex", flexDirection: "column", height: "100%" }}>
-                <div style={{ flex: 1, position: "relative", minHeight: 280 }}>
+              <div style={{ background: "#F3F4F6", display: "flex", flexDirection: "column" }}>
+                <div style={{ height: 280, position: "relative" }}>
                   <img src={selectedService.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", bottom: 12, left: 16, background: "rgba(17,24,39,0.7)", color: "white", padding: "4px 10px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>Primary View</div>
                 </div>
@@ -294,10 +355,10 @@ export default function Services() {
               </div>
 
               {/* Right Side Content */}
-              <div style={{ padding: "2.5rem 2rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ padding: "2.5rem 2rem", display: "flex", flexDirection: "column", justifyContent: "space-between", overflowY: "auto" }}>
                 <div>
                   <span style={{ color: "#EF4444", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>Core Service Detail</span>
-                  <h3 style={{ fontSize: 26, fontWeight: 800, color: "#111827", margin: "6px 0 16px" }}>{selectedService.title}</h3>
+                  <h3 style={{ fontSize: 24, fontWeight: 800, color: "#111827", margin: "6px 0 14px", lineHeight: 1.3 }}>{selectedService.title}</h3>
                   <p style={{ color: "#4B5563", fontSize: 14, lineHeight: 1.7, marginBottom: 20, textAlign: "justify" }}>
                     {selectedService.descText}
                   </p>
@@ -320,8 +381,10 @@ export default function Services() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
+
     </div>
   );
 }
